@@ -33,18 +33,19 @@ class Command extends \think\console\Command
         Db::query('show tables');
         $appPath = Env::get('app_path');
         $rootPath = Env::get('root_path');
+        $resourceDir = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'resource';
         //复制admin模块
         $output->writeln("copy admin module");
-        $this->copydir(__DIR__.DIRECTORY_SEPARATOR.'admin', $appPath.'admin');
+        $this->copydir($resourceDir.DIRECTORY_SEPARATOR.'admin', $appPath.'admin');
         //复制静态资源
         $output->writeln("copy static resource");
-        $this->copydir(__DIR__.DIRECTORY_SEPARATOR.'static', $rootPath.'public'.DIRECTORY_SEPARATOR.'static');
+        $this->copydir($resourceDir.DIRECTORY_SEPARATOR.'static', $rootPath.'public'.DIRECTORY_SEPARATOR.'static');
         //复制adminlte
         $output->writeln("copy adminlte resource");
         $this->copydir(Env::get('vendor_path').'almasaeed2010'.DIRECTORY_SEPARATOR.'adminlte', $rootPath.'public'.DIRECTORY_SEPARATOR.'static'.DIRECTORY_SEPARATOR.'adminlte');
         //复制migrate
         $output->writeln("copy migrate file");
-        $this->copydir(__DIR__.DIRECTORY_SEPARATOR.'database', $rootPath.'database');
+        $this->copydir($resourceDir.DIRECTORY_SEPARATOR.'database', $rootPath.'database');
         //执行migrate
         $output->writeln("run migrate");
         chdir(Env::get('root_path'));
