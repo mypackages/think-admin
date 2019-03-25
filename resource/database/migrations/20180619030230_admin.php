@@ -42,7 +42,7 @@ class Admin extends Migrator
             ->addColumn('mobile', 'string',['limit' => 15, 'null' => false,'default'=>'','comment'=>'手机号'])
             ->addColumn('wechat', 'string',['limit' => 50,'null' => false,'default'=>'','comment'=>'微信号'])
             ->addColumn('qq', 'string',['limit' => 20,'null' => false,'default'=>'','comment'=>'qq号'])
-            ->addColumn('remember_me', 'string',['limit' => 64,'null' => false,'default'=>'','comment'=>'记住密码的token'])
+            ->addColumn('remember_me', 'string',['limit' => 64,'null' => true, 'default'=> null,'comment'=>'记住密码的token'])
             ->addColumn('remember_deadline', 'integer',['limit' => 11,'null' => true, 'default'=> null,'comment'=>'记住密码的过期时间'])
             ->addColumn('login_time', 'integer',['limit' => 11,'null' => true, 'default'=> null,'comment'=>'登录时间'])
             ->addColumn('create_time', 'integer',['limit' => 11,'null' => true, 'default'=> null,'comment'=>'创建时间'])
