@@ -34,6 +34,11 @@ class Command extends \think\console\Command
         $appPath = Env::get('app_path');
         $rootPath = Env::get('root_path');
         $resourceDir = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'resource';
+        if(!is_dir($resourceDir))
+        {
+            $output->writeln("admin is installed");
+            exit;
+        }
         //复制admin模块
         $output->writeln("copy admin module");
         $this->copydir($resourceDir.DIRECTORY_SEPARATOR.'admin', $appPath.'admin');
@@ -54,8 +59,13 @@ class Command extends \think\console\Command
         {
             $output->writeln($row);
         }
+        //删除vendor里的资源文件以免编辑器提示重复定义
+        $output->writeln("delete vendor resource");
+        $this->delDir($resourceDir);
+
         $output->writeln("install success");
     }
+
 
 
     protected function copydir($source, $dest)
@@ -71,4 +81,29 @@ class Command extends \think\console\Command
         }
         closedir($handle);
     }
+
+
+    protected function delDir($directory){
+        if(!file_exists($directory)){
+            return;
+        }
+        if(!($dir_handle = @opendir($directory))){
+            return;
+        }
+        while($filename = readdir($dir_handle)){
+            if($filename == '.' || $filename == '..'){
+                continue;
+            }
+            $subFile = $directory.DIRECTORY_SEPARATOR.$filename;
+            if(is_dir($subFile)){
+                $this->delDir($subFile);
+            }
+            if(is_file($subFile)){
+                unlink($subFile);
+            }
+        }
+        closedir($dir_handle);
+        rmdir($directory);
+    }
+
 }
