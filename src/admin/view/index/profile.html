@@ -1,0 +1,155 @@
+
+<div class="modal-dialog" >
+
+    <div class="modal-content" id="modal-content">
+
+        <div class="modal-header">
+
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            <h4 class="modal-title" id="myModalLabel">个人资料</h4>
+
+        </div>
+
+        <div class="modal-body">
+
+
+
+            <form id="edit-form" class="form-horizontal form-ajax" role="form" data-toggle="validator" method="POST" action="">
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">用户名:</label>
+                    <div class="col-xs-12 col-sm-9">
+                        <input class="form-control" v-bind:value="entity.username" disabled type="text" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">姓名:</label>
+                    <div class="col-xs-12 col-sm-9">
+                        <input class="form-control" v-model="entity.nickname" type="text" placeholder=""/>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">手机:</label>
+                    <div class="col-xs-12 col-sm-9">
+                        <input class="form-control" v-model="entity.mobile" type="text" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">邮箱:</label>
+                    <div class="col-xs-12 col-sm-9">
+                        <input class="form-control" v-model="entity.email" type="text" placeholder=""/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">QQ:</label>
+                    <div class="col-xs-12 col-sm-9">
+                        <input class="form-control" v-model="entity.qq" type="text" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">微信:</label>
+                    <div class="col-xs-12 col-sm-9">
+                        <input class="form-control" v-model="entity.wechat" type="text" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">原密码:</label>
+                    <div class="col-xs-12 col-sm-9">
+                        <input class="form-control" v-model="entity.oldPassword" type="text" placeholder="修改密码才需要验证原密码，否则留空"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">新密码:</label>
+                    <div class="col-xs-12 col-sm-9">
+                        <input class="form-control" v-model="entity.password" type="text" placeholder="请输入新密码，不作修改则留空"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">再次输入:</label>
+                    <div class="col-xs-12 col-sm-9">
+                        <input class="form-control" v-model="entity.repassword" type="text" placeholder="请再次输入新密码"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">头像:</label>
+                    <div class="col-xs-12 col-sm-9">
+                        <input_img_upload v-if="entity.uuid" :parent_type="'admin'" :parent_uuid="entity.uuid"  ></input_img_upload>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+
+            <button type="button" class="btn btn-success" v-on:click="submit">保存</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+    var modalApp = new Vue({
+        el: '#modal-content',
+        data: {
+            api: {
+                getData: "{:url('index/myInfo')}",
+                editApi: "{:url('index/profile')}"
+            },
+            entity: {},
+            requestIng: false,
+        },
+        methods: {
+            getData: function () {
+                var that = this;
+                RequestUtil.post(this.api.getData, {}, function (result) {
+                    that.entity = result.data;
+                    that.entity.password = '';
+                    that.entity.repassword = '';
+                    that.entity.oldPassword = '';
+                }, function () {
+                    that.requestIng = true;
+                    Notify.error('初始化数据失败');
+                });
+            },
+            submit: function (event) {
+                if(this.entity.password !== this.entity.repassword)
+                {
+                    return Notify.error('两次输入密码不正确');
+                }
+                var that = this;
+                if(that.requestIng)
+                {
+                    return false;
+                }
+                that.requestIng = true;
+                RequestUtil.post(that.api.editApi, RequestUtil.getVueParams(this.entity, ['oldPassword', 'nickname', 'password', 'mobile', 'qq', 'wechat', 'email']), function (result) {
+                    that.requestIng = false;
+                    Notify.success(result.info);
+                    $("#modal").modal('hide');
+                },function () {
+                    that.requestIng = false;
+                });
+            },
+
+        },
+        watch: {
+
+        },
+        mounted: function () {
+            this.getData();
+        }
+    });
+</script>

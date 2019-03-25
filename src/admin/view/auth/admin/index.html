@@ -1,0 +1,236 @@
+{extend name="common/base" /}
+{block name='title'}管理员管理{/block}
+
+
+{block name='search'}
+<div id="search-param" class="form-inline" style="padding-top: 5px;display: inline">
+    <select class="group form-control" v-model="searchParam.group_id" style="width: 150px">
+        <option v-bind:value="0">所属用户组</option>
+        <option v-for="option in groups" v-bind:value="option.id">
+            {{'---'|repeat(option.lev)}}{{ option.name }}
+        </option>
+    </select>
+
+    <input type="text" placeholder="搜索用户名" class="form-control" v-model="searchParam.username">
+    <button title="查询" class="btn btn-primary btn-sm" v-on:click="submitSearch"><span class="fa fa-search"></span></button>
+</div>
+{/block}
+
+{block name='toolbar'}
+    {:build_toolbar([
+    'add' => '',
+    'delete' => '',
+    ])}
+{/block}
+{block name="build_operate"}
+    {:build_operate([
+    'edit' => '',
+    'delete' => '',
+    ])}
+<script>
+    //控制单行数据操作按钮是否显示 row是传入单行的数据, key是上面build_operate传入的键名, value是上面build_operate传入的值
+     function  row_oprate(row, key, value) {
+        if(row.id == 1)
+        {
+            return '';
+        }
+        return value.replace('id_value', row.id);
+    }
+</script>
+{/block}
+
+
+{block name="table_container"}
+<div class="fixed-table-container" style="padding-bottom: 0px;">
+    <div class="fixed-table-header" style="display: none;">
+        <table></table>
+    </div>
+    <div class="fixed-table-body">
+        <table id="table" class="table table-striped table-bordered table-hover" data-operate-edit="1" data-operate-del="1" width="100%">
+            <thead>
+            <tr>
+                <th class="bs-checkbox " style="text-align: center; vertical-align: middle; width: 36px; " data-field="state">
+                    <div class="th-inner "><input name="btSelectAll" type="checkbox" v-model="checkAll"></div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="id">
+                    <div class="th-inner ">ID</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="username">
+                    <div class="th-inner ">用户名</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="nickname">
+                    <div class="th-inner ">昵称</div><div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="groups_text">
+                    <div class="th-inner ">所属组别</div><div class="fht-cell"></div>
+                </th>
+                <th v-if="searchParam.owner == 'org'" style="text-align: center; vertical-align: middle; " >
+                    <div class="th-inner ">所属机构</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="mobile">
+                    <div class="th-inner ">手机</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="wechat">
+                    <div class="th-inner ">微信</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="qq">
+                    <div class="th-inner ">QQ</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="email">
+                    <div class="th-inner ">Email</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="status">
+                    <div class="th-inner ">状态</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="logintime">
+                    <div class="th-inner sortable both">最后登录</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="operate">
+                    <div class="th-inner ">操作</div>
+                    <div class="fht-cell"></div>
+                </th>
+            </tr>
+            </thead>
+            <tbody data-listidx="0" v-if="list.length > 0">
+            <tr data-index="0" v-for="row in list" v-cloak>
+                <td class="bs-checkbox "><input type="checkbox" v-model="checkIds.id" v-bind:value="row.id"></td>
+                <td style="text-align: center; vertical-align: middle; ">{{row.id}}</td>
+                <td style="text-align: center; vertical-align: middle; ">{{row.username}}</td>
+                <td style="text-align: center; vertical-align: middle; ">{{row.nickname}}</td>
+                <td style="text-align: center; vertical-align: middle; ">
+                    <span class="label label-primary" v-if="row.group_access && row.group_access.group  && row.group_access.group.name">{{row.group_access.group.name}}</span>
+                </td>
+                <td style="text-align: center; vertical-align: middle; " v-if="searchParam.owner == 'org'">
+                    <span class="label label-primary" v-if="row.agency && row.agency.agency_name">{{row.agency.agency_name}}</span>
+                </td>
+                <td style="text-align: center; vertical-align: middle; ">{{row.mobile}}</td>
+                <td style="text-align: center; vertical-align: middle; ">{{row.wechat}}</td>
+                <td style="text-align: center; vertical-align: middle; ">{{row.qq}}</td>
+                <td style="text-align: center; vertical-align: middle; ">{{row.email}}</td>
+                <td style="text-align: center; vertical-align: middle; ">
+                    <span class="text-success" v-if="row.status == 'normal'"><i class="fa fa-circle"></i> 正常</span>
+                    <span class="text-danger"  v-if="row.status == 'locked'"><i class="fa fa-circle"></i> 锁定</span>
+                </td>
+                <td style="text-align: center; vertical-align: middle; ">{{row.login_time|timestampToTime(1)}}</td>
+                <td v-html="operate(row)" style="text-align: center; vertical-align: middle; "></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="fixed-table-footer" style="display: none;">
+        <table>
+            <tbody>
+            <tr></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="fixed-table-pagination" style="display: none;"></div>
+    <page_service ref="pageService"></page_service>
+</div>
+{/block}
+
+{block name='page_js'}
+<script src="{$resDomain}/admin/js/vuePublic.js"></script>
+<script>
+    var listApp = new Vue({
+        el: '#panel-intro',
+        data: {
+            api: {
+                indexApi: "{:url('auth.admin/index')}",
+                editApi: "{:url('auth.admin/edit', ['id' => 'id_value'])}",
+                deleteApi: "{:url('auth.admin/delete')}",
+                groupApi: "{:url('auth.group/groupApi')}"
+            },
+            checkAll: false,
+            checkIds: {
+                id: []
+            },
+            list: [],
+            searchParam: {
+                page: 1,
+                limit: 10,
+                group_id: 0,
+                username: '',
+            },
+            groups: [],
+            requestIng: false,
+        },
+        methods: {
+            getData: function (event) {
+                var that = this;
+                this.requestIng = true;
+                RequestUtil.post(this.api.indexApi, RequestUtil.getAxiosParams(this.searchParam), function (result) {
+                    that.requestIng = false;
+                    that.list = result.data;
+                    //刷新分页
+                    that.$refs.pageService.renderPage(result.curPage, result.count,result.limit,function(obj,first){
+                        that.searchParam.page = obj.curr;
+                        if(!first){
+                            that.getData();
+                        }
+                    });
+                },
+                function () {
+                    that.requestIng = false;
+                });
+            },
+            batchDelete: function (event) {
+                var that = this;
+                ClickUtil.confirm('确定要删除吗', function () {
+                    if(that.requestIng)
+                        return false;
+                    that.requestIng = true;
+                    RequestUtil.post(that.api.deleteApi, that.checkIds, function (result) {
+                            that.requestIng = false;
+                            Notify.success('删除成功');
+                            that.checkIds.id = [];
+                            that.getData();
+                        },
+                        function () {
+                            that.requestIng = false;
+                        });
+                });
+            },
+            groupInit: function () {
+                var that = this;
+                RequestUtil.post(this.api.groupApi, {}, function (result) {
+                    that.groups = result.data;
+                }, function () {
+                    Notify.error('获取用户组失败');
+                });
+            },
+            submitSearch: function () {
+                Notify.success('搜索中');
+                this.searchParam.page = 1;
+                this.getData()
+            }
+        },
+        watch: {
+            checkAll: function (newValue, oldValue) {
+                this.checkIds.id = [];
+                if(newValue)
+                {
+                    for (var k in this.list)
+                    {
+                        this.checkIds.id.push(this.list[k].id);
+                    }
+                }
+            }
+        },
+        mounted: function () {
+            this.getData();
+            this.groupInit();
+        }
+    });
+</script>
+{/block}

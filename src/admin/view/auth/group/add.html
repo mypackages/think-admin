@@ -1,0 +1,195 @@
+<div class="modal-dialog">
+
+    <div class="modal-content" id="modal-content">
+
+        <div class="modal-header">
+
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            <h4 class="modal-title" id="myModalLabel">添加角色组</h4>
+
+        </div>
+
+        <div class="modal-body">
+            <form id="add-form" class="form-horizontal form-ajax nice-validator n-default n-bootstrap" role="form" data-toggle="validator" method="POST" action="" novalidate="novalidate">
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2">名称:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <input type="text" class="form-control" v-model="entity.name" >
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2">父级:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <select class="form-control" v-model="entity.pid" name="row[pid]">
+                            <option v-bind:value="0">无</option>
+                            <option v-for="option in parents" v-bind:value="option.id">
+                                {{'---'|repeat(option.lev)}}{{ option.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2">权限:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <span class="text-muted"><input type="checkbox" name="" id="checkall"  v-model="checkall"/> <label for="checkall"><small>选中全部</small></label></span>
+                        <span class="text-muted"><input type="checkbox" name="" id="expandall" v-model="expandAll"/> <label for="expandall"><small>展开全部</small></label></span>
+                        <div style="max-height: 400px; overflow:auto">
+                            <ul id="ztree" class="ztree"></ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2">状态:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <div class="radio">
+                            <label v-for="option in status_type" >
+                                <input type="radio" v-model="entity.status" v-bind:value="option.value"> {{ option.title }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+
+        <div class="modal-footer">
+
+            <button type="button" class="btn btn-success" v-on:click="submit">保存</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+    var modalApp = new Vue({
+        el: '#modal-content',
+        data: {
+            api: {
+                getTreeApi: "{:url('auth.rule/getTree', ['status' => 'normal'])}",
+                addApi: "{:url('auth.group/add')}",
+                groupApi: "{:url('auth.group/groupApi')}"
+            },
+            entity: {
+                pid: '{:input("param.pid", 0)}',
+                name: '',
+                rules: '',
+                status: 'normal',
+            },
+            parents: [],
+            status_type: [
+                {'value': 'normal', 'title': '正常'},
+                {'value': 'locked', 'title': '锁定'}
+            ],
+            checkall: false,
+            expandAll: true,
+            requestIng: false,
+            ztreeDom: 'ztree'
+        },
+        methods: {
+            submit: function (event) {
+                var that = this;
+                if(that.requestIng)
+                {
+                    return false;
+                }
+                that.requestIng = true;
+                that.entity.rules = this.getZtreeData();
+                RequestUtil.post(that.api.addApi, RequestUtil.getVueParams(this.entity, ['pid', 'name', 'rules', 'status']), function (result) {
+                    that.requestIng = false;
+                    Notify.success(result.info);
+                    listApp.getData();
+                    $("#modal").modal('hide');
+                },function () {
+                    that.requestIng = false;
+                });
+            },
+            ztreeInit: function () {
+                var that = this;
+                RequestUtil.post(that.api.getTreeApi, {}, function (result) {
+                    var nodes = result.data;
+                    var setting = {
+                        view: {
+                            showLine: true
+                        },
+                        data: {
+                            simpleData: {
+                                enable: true
+                            }
+                        },
+                        check:{
+                            enable: true,
+                            chkboxType: { "Y" : "s", "N" : "ps" }
+                        }
+                    };
+
+                    $.fn.zTree.init($('#'+that.ztreeDom), setting, nodes);
+
+                });
+            },
+            checkAllNodes: function () {
+                $.fn.zTree.getZTreeObj(this.ztreeDom).checkAllNodes(true);
+            },
+            callcelCheckAllNodes: function () {
+                $.fn.zTree.getZTreeObj(this.ztreeDom).checkAllNodes(false);
+            },
+            expandAllNodes: function () {
+                $.fn.zTree.getZTreeObj(this.ztreeDom).expandAll(true);
+            },
+            callcelExpandAllNodes: function () {
+                $.fn.zTree.getZTreeObj(this.ztreeDom).expandAll(false);
+            },
+            getZtreeData: function () {
+                var treeObj = $.fn.zTree.getZTreeObj(this.ztreeDom);
+                var filter = function(node){
+                    return node.checked==true;
+                }
+                var checkedNodes = treeObj.getNodesByFilter(filter);
+                var nodeIds = [];
+                for(var i in checkedNodes){
+                    nodeIds.push(checkedNodes[i].id);
+                }
+                if(nodeIds.length > 0){
+                    return nodeIds.join(',');
+                }
+                return null;
+            },
+            parentsInit: function () {
+                var that = this;
+                RequestUtil.post(that.api.groupApi, {}, function (result) {
+                    that.parents = result.data;
+                });
+            }
+        },
+        watch: {
+            checkall: function (newValue, oldValue) {
+                if(newValue)
+                {
+                    this.checkAllNodes();
+                }else{
+                    this.callcelCheckAllNodes();
+                }
+            },
+            expandAll: function (newValue, oldValue) {
+                if(newValue)
+                {
+                    this.expandAllNodes();
+                }else{
+                    this.callcelExpandAllNodes();
+                }
+            }
+        },
+        mounted: function () {
+            this.parentsInit();
+            this.ztreeInit();
+        }
+    })
+</script>

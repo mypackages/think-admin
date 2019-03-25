@@ -1,0 +1,170 @@
+<div class="modal-dialog">
+
+    <div class="modal-content" id="modal-content">
+
+        <div class="modal-header">
+
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+
+            <h4 class="modal-title" id="myModalLabel">添加管理员</h4>
+
+        </div>
+
+        <div class="modal-body">
+            <form id="edit-form" class="form-horizontal form-ajax" role="form" data-toggle="validator" method="POST" action="">
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2">所属组别:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <select class="form-control" v-model="entity.group_id" name="row[pid]">
+                            <option v-bind:value="0">无</option>
+                            <option v-for="option in groups" v-bind:value="option.id">
+                                {{'---'|repeat(option.lev)}}{{ option.name }}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">用户名:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <input type="text" class="form-control" v-model="entity.username" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">Email:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <input type="email" class="form-control"  v-model="entity.email" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">昵称:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <input type="text" class="form-control"  v-model="entity.nickname" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">密码:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <input type="password" class="form-control"  v-model="entity.password"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">手机号码:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <input type="text" class="form-control"  v-model="entity.mobile" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">微信:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <input type="text" class="form-control"  v-model="entity.wechat" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">QQ:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <input type="text" class="form-control"  v-model="entity.qq" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label  class="control-label col-xs-12 col-sm-2">头像:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <input_img_upload v-if="entity.uuid" :parent_type="'admin'" :parent_uuid="entity.uuid"  ></input_img_upload>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label col-xs-12 col-sm-2">状态:</label>
+                    <div class="col-xs-12 col-sm-8">
+                        <div class="radio">
+                            <label v-for="option in status_type" >
+                                <input type="radio" v-model="entity.status" v-bind:value="option.value"> {{ option.title }}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="modal-footer">
+
+            <button type="button" class="btn btn-success" v-on:click="submit">保存</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">关闭</button>
+
+        </div>
+
+    </div>
+
+</div>
+<script>
+    var modalApi = {
+        addApi: "{:url('auth.admin/add')}",
+        groupApi: "{:url('auth.group/groupApi')}"
+    };
+    var modalApp = new Vue({
+        el: '#modal-content',
+        data: {
+            entity:{
+                username: '',
+                nickname: '',
+                status: 'normal',
+                email: '',
+                password: '',
+                mobile: '',
+                wechat: '',
+                qq: '',
+                group_id: 0,
+                uuid: ''
+            },
+            status_type: [
+                {'value': 'normal', 'title': '正常'},
+                {'value': 'locked', 'title': '锁定'}
+            ],
+            groups: [],
+            requestIng: false,
+        },
+        methods: {
+            submit: function (event) {
+                var that = this;
+                if(that.requestIng)
+                {
+                    return false;
+                }
+                that.requestIng = true;
+                RequestUtil.post(modalApi.addApi, RequestUtil.getVueParams(this.entity, ['wechat', 'qq', 'mobile', 'username', 'nickname', 'status', 'email', 'password', 'group_id']), function (result) {
+                    that.requestIng = false;
+                    Notify.success(result.info);
+                    listApp.getData();
+                    $("#modal").modal('hide');
+                },function () {
+                    that.requestIng = false;
+                });
+            },
+            groupInit: function () {
+                var that = this;
+                RequestUtil.post(modalApi.groupApi, {}, function (result) {
+                    that.groups = result.data;
+                }, function () {
+                    Notify.error('获取用户组失败');
+                });
+            },
+            getUUID: function () {
+                var that = this;
+                RequestUtil.get(componentUrl.uuidUrl, {}, function (res) {
+                    that.entity.uuid = res.data;
+                },function () {
+                    Notify.error('获取uuid失败');
+                    that.requestIng = true;
+                });
+            }
+        },
+        mounted: function () {
+            this.groupInit();
+            this.getUUID();
+        }
+    });
+</script>

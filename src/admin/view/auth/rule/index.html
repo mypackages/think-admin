@@ -1,0 +1,253 @@
+{extend name="common/base" /}
+{block name='title'}菜单规则{/block}
+
+{block name='toolbar'}
+{:build_toolbar([
+'add' => '',
+'delete' => '',
+])}
+<a v-if="!openAllStatus" v-cloak href="javascript:;" title="全部展开" class="btn btn-info btn-del" v-on:click="openCloseAll(true)"><i class="fa fa-plus-square" ></i> 全部展开</a>
+<a v-if="openAllStatus" v-cloak href="javascript:;" title="全部收缩" class="btn btn-info btn-del" v-on:click="openCloseAll(false)"><i class="fa fa-minus-square" ></i> 全部收缩</a>
+{/block}
+
+{block name="build_operate"}
+{:build_operate([
+'add' => '<a data-url="'.url('add', ['pid' => 'id_value']).'" class="btn btn-xs btn-primary btn-editone clickModal" data-toggle="tooltip" title="添加"  ><i class="fa fa-plus-square"></i></a>',
+'edit' => '',
+'delete' => '',
+])}
+<script>
+    //控制单行数据操作按钮是否显示 row是传入单行的数据, key是上面build_operate传入的键名, value是上面build_operate传入的值
+    function row_oprate(row, key, value) {
+        if(row.id == 1 || row.id == 2 || row.id == 3 || row.id == 4 || row.id == 5 || row.id == 6 || row.pid == 5)
+        {
+            return '';
+        }
+        return value.replace('id_value', row.id);
+    }
+</script>
+{/block}
+
+{block name="table_container"}
+<div class="fixed-table-container" style="padding-bottom: 0px;">
+    <div class="fixed-table-header" style="display: none;">
+        <table></table>
+    </div>
+    <div class="fixed-table-body">
+        <table  id="table" class="table table-bordered table-hover" data-operate-edit="1" data-operate-del="1" width="100%">
+            <thead>
+            <tr>
+                <th class="bs-checkbox " style="text-align: center; vertical-align: middle; width: 36px; " data-field="state">
+                    <div class="th-inner "><input name="btSelectAll" type="checkbox"  v-model="checkAll"></div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="id">
+                    <div class="th-inner ">ID</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: left; vertical-align: middle; " data-field="title">
+                    <div class="th-inner ">标题</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="icon">
+                    <div class="th-inner ">图标</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: left; vertical-align: middle; " data-field="name">
+                    <div class="th-inner ">规则</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="weigh">
+                    <div class="th-inner ">权重</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="status">
+                    <div class="th-inner ">状态</div>
+                    <div class="fht-cell"></div>
+                </th>
+                <th style="text-align: center; vertical-align: middle; " data-field="ismenu">
+                    <div class="th-inner ">菜单</div>
+                    <div class="fht-cell"></div>
+                </th>
+
+                <th style="text-align: center; vertical-align: middle; " data-field="operate">
+                    <div class="th-inner ">操作</div>
+                    <div class="fht-cell"></div>
+                </th>
+            </tr>
+            </thead>
+            <tbody data-listidx="0" v-if="list.length > 0">
+            <tr data-index="0" v-for="row in list" v-cloak v-if="in_array(row.pid, openedIds)">
+                <td class="bs-checkbox "><input type="checkbox" v-model="checkIds.id" v-bind:value="row.id"></td>
+                </td>
+                <td style="text-align: center; vertical-align: middle; ">{{row.id}}</td>
+                <td v-on:click="in_array(row.id, hasChildIds) ? openClose($event, row.id) : ''" v-bind:data-status="in_array(row.id, hasChildIds) && in_array(row.id, openedIds) ? 'fa fa-minus-square' : 'fa fa-plus-square'"  style="text-align: left; vertical-align: middle; "> {{'---'|repeat(row.lev)}} {{row.title}}  <span style="cursor: pointer" v-if="in_array(row.id, hasChildIds)" v-bind:class="in_array(row.id, hasChildIds) && in_array(row.id, openedIds) ? 'fa fa-minus-square' : 'fa fa-plus-square'" ></span></td>
+                <td style="text-align: center; vertical-align: middle; "><span class=""><i :class="'fa ' + row.icon"></i></span></td>
+                <td style="text-align: left; vertical-align: middle; ">{{row.name}}</td>
+                <td style="text-align: center; vertical-align: middle; ">{{row.sort}}</td>
+                <td style="text-align: center; vertical-align: middle; ">
+                    <span class="text-success" v-if="row.status == 'normal'"><i class="fa fa-circle"></i> 显示</span>
+                    <span class="text-danger"  v-if="row.status == 'hidden'"><i class="fa fa-circle"></i> 隐藏</span>
+                    </td>
+                <td style="text-align: center; vertical-align: middle; ">
+                    <span  v-if="row.is_menu == '1'"> 是</span>
+                    <span  v-if="row.is_menu == '0'"> 否</span>
+                </td>
+               <td v-html="operate(row)" style="text-align: center; vertical-align: middle; "></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="fixed-table-footer" style="display: none;">
+        <table>
+            <tbody>
+            <tr></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="fixed-table-pagination" style="display: none;"></div>
+</div>
+{/block}
+
+{block name='page_css'}
+<link rel="stylesheet" href="{$resDomain}/adminlte/bower_components/select2/dist/css/select2.min.css">
+{/block}
+{block name='page_js'}
+<script src="{$resDomain}/adminlte/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script>
+    $('.select2').select2();
+    var listApp = new Vue({
+        el: '#panel-intro',
+        data: {
+            api: {
+                indexApi: "{:url('auth.rule/index')}",
+                editApi: "{:url('auth.rule/edit', ['id' => 'id_value'])}",
+                deleteApi: "{:url('auth.rule/delete')}"
+            },
+            checkAll: false,
+            checkIds: {
+                id: []
+            },
+            list: [],
+            searchParam: {
+
+            },
+            requestIng: false,
+            openedIds: [],
+            hasChildIds: [],
+            openAllStatus: false
+        },
+        methods: {
+            getData: function (clearOpendIds) {
+                var that = this;
+                this.requestIng = true;
+                RequestUtil.post(that.api.indexApi, RequestUtil.getAxiosParams(this.searchParam), function (result) {
+                    that.requestIng = false;
+                    if(clearOpendIds)
+                    {
+                        that.openedIds = [];
+                    }
+                    that.hasChildIds = [];
+                    var list = result.data;
+                    for(var k in list)
+                    {
+                        var row = list[k];
+                        if(clearOpendIds && (row.lev === 0))
+                        {
+                            that.openedIds.push(row.pid);
+                        }
+                        if(row.lev > 0)
+                        {
+                            that.hasChildIds.push(row.pid);
+                        }
+                    }
+                    that.list = result.data;
+                },
+                function () {
+                    that.requestIng = false;
+                });
+            },
+            batchDelete: function (event) {
+                var that = this;
+                ClickUtil.confirm('确定要删除吗', function () {
+                    if(that.requestIng)
+                        return false;
+                    that.requestIng = true;
+                    RequestUtil.post(that.api.deleteApi, that.checkIds, function (result) {
+                            that.requestIng = false;
+                            Notify.success('删除成功');
+                            that.checkIds.id = [];
+                            that.getData();
+                        },
+                        function () {
+                            that.requestIng = false;
+                        }
+                    );
+                    }
+                );
+            },
+            openClose: function (event, id) {
+                var isOpen = false;
+                if(event.currentTarget.getAttribute("data-status") === 'fa fa-plus-square')
+                {
+                    var isOpen = true;
+                }
+                if(isOpen)
+                {
+                    this.openedIds.push(id);
+                    return;
+                }
+                for (var k in this.list)
+                {
+                    if(this.list[k].id != id)
+                    {
+                        continue;
+                    }
+                    var childIds = this.list[k].child_ids.split(",");
+                    for (var kk in childIds)
+                    {
+                        this.array_unset(childIds[kk], this.openedIds)
+                    }
+                }
+                this.array_unset(id, this.openedIds)
+            },
+            openCloseAll: function (status) {
+                this.openAllStatus = status;
+                for (var k in this.list)
+                {
+                    var row = this.list[k];
+                    if(!this.in_array(row.id, this.hasChildIds))
+                    {
+                        continue;
+                    }
+                    if(!status)
+                    {
+                        this.array_unset(row.id, this.openedIds);
+                        continue;
+                    }
+                    if(!this.in_array(row.id, this.openedIds))
+                    {
+                        this.openedIds.push(row.id);
+                    }
+                }
+            }
+        },
+        watch: {
+            checkAll: function (newValue, oldValue) {
+                this.checkIds.id = [];
+                if(newValue)
+                {
+                    for (var k in this.list)
+                    {
+                        this.checkIds.id.push(this.list[k].id);
+                    }
+                }
+            }
+        },
+        mounted: function () {
+            this.getData(true);
+        }
+    })
+
+</script>
+{/block}

@@ -1,0 +1,26 @@
+{
+    "name": "liupan-v/tpadmin",
+    "description": "thinkpkp5.1的一个管理后台",
+    "type": "library",
+    "require": {
+        "topthink/framework": "^5.1.17",
+        "almasaeed2010/adminlte": "2.4.3",
+        "topthink/think-migration": "2.0.3"
+    },
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "liupan",
+            "email": "498501258@qq.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4" : {
+            "liupanv\\think\\tpadmin\\"  : "src/"
+        },
+        "files" : [
+            "autoload.php"
+        ]
+    }
+}

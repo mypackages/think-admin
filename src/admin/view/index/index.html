@@ -1,0 +1,354 @@
+{extend name="common/base" /}
+{block name='title'}后台首页{/block}
+{block name="panel_body"}
+<div class="panel-body">
+    <div id="myTabContent" class="tab-content">
+        <div class="tab-pane fade active in" id="one">
+            <div class="widget-body no-padding">
+                <div class="row">
+                    <div class="col-lg-3 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-aqua" {if $userCount === '***'}title='无权限查看'{/if}>
+                            <div class="inner">
+                                <h3>{$userCount}</h3>
+                                <p>总用户数</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-users"></i>
+                            </div>
+                            <a   class="small-box-footer btn-addtabs">
+                                查看更多 <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-green" {if $visitCount === '***'}title='无权限查看'{/if}>
+                            <div class="inner">
+                                <h3>{$visitCount}</h3>
+
+                                <p>总访问数</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-book"></i>
+                            </div>
+                            <a  class="small-box-footer btn-addtabs">
+                                 <i class="fa "></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-yellow" {if $totalOrder === '***'}title='无权限查看'{/if}>
+                            <div class="inner">
+                                <h3>{$totalOrder}</h3>
+
+                                <p>总订单数</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-shopping-bag"></i>
+                            </div>
+                            <a   class="small-box-footer btn-addtabs">
+                                查看更多 <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                    <div class="col-lg-3 col-xs-6">
+                        <!-- small box -->
+                        <div class="small-box bg-red" {if $agencyRecharge === '***'}title='无权限查看'{/if}>
+                            <div class="inner">
+                                <h3>{$agencyRecharge}</h3>
+
+                                <p>充值金额</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fa fa-cny"></i>
+                            </div>
+                            <a  class="small-box-footer btn-addtabs">
+                                查看更多 <i class="fa fa-arrow-circle-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <!-- ./col -->
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box bg-aqua"  {if $todayRegister === '***'}title='无权限查看'{/if}>
+                            <span class="info-box-icon"><i class="fa fa-rocket"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">今日注册</span>
+                                <span class="info-box-number">{$todayRegister}</span>
+
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 20%"></div>
+                                </div>
+                                <a  class="small-box-footer btn-addtabs" style="color: lightcyan">
+                                    查看更多 <i class="fa fa-arrow-circle-right"></i>
+                                </a>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box bg-green" {if $todayLogin === '***'}title='无权限查看'{/if}>
+                            <span class="info-box-icon"><i class="fa fa-users"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">今日登陆</span>
+                                <span class="info-box-number">{$todayLogin}</span>
+
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 20%"></div>
+                                </div>
+                                <a   class="small-box-footer btn-addtabs" style="color: lightcyan">
+                                    查看更多 <i class="fa fa-arrow-circle-right"></i>
+                                </a>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box bg-yellow" {if $todayPaidOrder === '***'}title='无权限查看'{/if}>
+                            <span class="info-box-icon"><i class="fa fa-line-chart"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">今日成交</span>
+                                <span class="info-box-number">{$todayPaidOrder}</span>
+
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 20%"></div>
+                                </div>
+                                <a   class="small-box-footer btn-addtabs" style="color:lightcyan;">
+                                    查看更多 <i class="fa fa-arrow-circle-right"></i>
+                                </a>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="info-box bg-red" {if $noPaidOrder === '***'}title='无权限查看'{/if}>
+                            <span class="info-box-icon"><i class="fa fa-shopping-cart"></i></span>
+
+                            <div class="info-box-content">
+                                <span class="info-box-text">未支付订单</span>
+                                <span class="info-box-number">{$noPaidOrder}</span>
+
+                                <div class="progress">
+                                    <div class="progress-bar" style="width: 20%"></div>
+                                </div>
+                                <a  class="small-box-footer btn-addtabs" style="color: lightcyan">
+                                    查看更多 <i class="fa fa-arrow-circle-right"></i>
+                                </a>
+                            </div>
+                            <!-- /.info-box-content -->
+                        </div>
+                        <!-- /.info-box -->
+                    </div>
+                    <!-- /.col -->
+                </div>
+                {if $canViwChart}
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="page-header">
+                            <h4 class="no-margin">订单趋势</h4>
+                        </div>
+                        <div id="datefilter">
+                            <form id="search-param" action="" role="form" novalidate="novalidate" class="form-inline nice-validator n-default n-bootstrap">
+                                <a href="javascript:;" class="btn btn-primary btn-refresh" v-on:click="getChart"><i class="fa fa-refresh"></i></a>
+                                <select v-model="chartType" class="group form-control" style="min-width: 100px;">
+                                    <option value="amount">销售额</option>
+                                    <option value="num">销售量</option>
+                                </select>
+                                <select v-model="examId" class="group form-control" id="select_exam" style="min-width:160px">
+                                    <option v-bind:value="-1">选择考试</option>
+                                    <template  v-if="exam_list.length > 0" >
+                                        <option v-bind:value="row.id" v-for="row in exam_list" v-bind:disabled="!row.canSelect || row.canSelect != 1">{{'---'|repeat(row.lev)}}{{row.name}}</option>
+                                    </template>
+                                </select>
+                                <a href="javascript:;" class="btn btn-success btn-filter"  v-on:click="changeDateType('today')"   v-bind:class="dateType == 'today' ? 'cur' : ''">今天</a>
+                                <a href="javascript:;" class="btn btn-success btn-filter"  v-on:click="changeDateType('yesterday')"  v-bind:class="dateType == 'yesterday' ? 'cur' : ''">昨天</a>
+                                <a href="javascript:;" class="btn btn-success btn-filter"  v-on:click="changeDateType('last_7_day')"   v-bind:class="dateType == 'last_7_day' ? 'cur' : ''">最近7天</a>
+                                <a href="javascript:;" class="btn btn-success btn-filter"  v-on:click="changeDateType('last_30_day')"   v-bind:class="dateType == 'last_30_day' ? 'cur' : ''">最近30天</a>
+                                <a href="javascript:;" class="btn btn-success btn-filter"  v-on:click="changeDateType('last_month')"   v-bind:class="dateType == 'last_month' ? 'cur' : ''">上月</a>
+                                <a href="javascript:;" class="btn btn-success btn-filter"  v-on:click="changeDateType('current_month')"   v-bind:class="dateType == 'current_month' ? 'cur' : ''">本月</a>
+                                <!--<a href="javascript:;" class="btn btn-success btn-filter"  v-on:click="changeDateType('custom_date')"   v-bind:class="dateType == 'custom_date' ? 'cur' : ''">自定义</a>-->
+                                <div class="input-group" >
+                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                    <input type="text" v-model="customDate" id="searchTime" class="form-control input-inline datetimerange" placeholder="指定日期" style="width:270px;" >
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                {/if}
+            </div>
+        </div>
+        <div class="tab-pane fade active in">
+            <div class="row">
+                <div class="col-sm-12 col-xs-12" style="overflow: auto" id="chart">
+
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed-table-container" style="padding-bottom: 0px;">
+
+            <div class="fixed-table-body" style="padding-top: 10px">
+                <table id="table" data-operate-edit="1" data-operate-del="1" width="100%"
+                       class="table table-striped table-bordered table-hover">
+                    <thead>
+                    <tr>
+                        <!--<th style="text-align: center; vertical-align: middle;">-->
+                            <!--本月销售数量-->
+                        <!--</th>-->
+                        <th style="text-align: center; vertical-align: middle;" v-for="item in sale_num_header" v-cloak>
+                            <div class="th-inner ">{{item}}</div>
+                            <div class="fht-cell"></div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody data-listidx="0">
+                    <tr data-index="0" v-for="list_item in sale_num_list" v-cloak>
+                        <td style="text-align: center; vertical-align: middle;" v-for="row in list_item">{{row}}</td>
+                    </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="fixed-table-footer" style="display: none;">
+                <table>
+                    <tbody>
+                    <tr></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+{/block}
+{block name="page_css"}
+<link rel="stylesheet" href="{$resDomain}/adminlte/bower_components/select2/dist/css/select2.min.css">
+<style>
+    #search-param .select2-selection--single{
+        height: 31px;
+        border-radius: 0;
+    }
+    #datefilter .cur{
+        background-color:rgb(0,166,90);
+    }
+</style>
+{/block}
+{block name="page_js"}
+<script src="{$resDomain}/admin/libs/laydate/laydate.js"></script>
+<script type="text/javascript" src="{$resDomain}/admin/js/Chart.js"></script>
+<script src="{$resDomain}/adminlte/bower_components/select2/dist/js/select2.full.min.js"></script>
+<script>
+    var api = {
+        chartApi: "{:url('api/indexChartData')}",
+        curMonthSaleNumApi: "{:url('api/getCurMonthSaleNum')}",
+        examApi: "{:url('api/indexChartExams')}",
+    };
+    var canViewChart = true;
+    var contentApp = new Vue({
+        el: '#myTabContent',
+        data: {
+            chartType: 'amount',
+            examId: -1,
+            dateType: 'last_7_day',
+            customDate: '',
+            sale_num_header: [],
+            sale_num_list: [],
+            exam_list: [],
+            api: api,
+            chartInit:false
+        },
+        methods: {
+            getChart: function (event) {
+                var that = this;
+                var examId = this.examId;
+                var title = '';
+                for(var i in this.exam_list){
+                    var row = this.exam_list[i];
+                    if(row['id'] == examId){
+                        title = row['name'];
+                        break;
+                    }
+                }
+                var result = '{"code":200,"info":"\u8bf7\u6c42\u6210\u529f","data":{"x":["2019-03-16","2019-03-17","2019-03-18","2019-03-19","2019-03-20","2019-03-21","2019-03-22","2019-03-23"],"y":["352155.00","228265.00","666506.00","525617.00","497657.00","539193.00","622615.13","336935.00"]}}';
+                result = eval('(' + result + ')');
+                $('#barChart2').remove();
+                $('#chart').html('<canvas id="barChart2" height="70"></canvas>');
+                that.showChart("#barChart2",'line',result.data.x, result.data.y, title, 'rgb(152,238,212)');
+                that.chartInit = true;
+                // RequestUtil.post(this.api.chartApi, {chartType: this.chartType, examId:examId, dateType: this.dateType, customDate: this.customDate}, function (result) {
+                //     $('#barChart2').remove();
+                //     $('#chart').html('<canvas id="barChart2" height="70"></canvas>');
+                //     that.showChart("#barChart2",'line',result.data.x, result.data.y, title, 'rgb(152,238,212)');
+                //     that.chartInit = true;
+                // });
+            },
+            showChart: function (id,types,x,y,tit,BgColor) {
+                var popCanvas = $(id);
+                var barChart = new Chart(popCanvas, {
+                    type: types,
+                    data: {
+                        labels: x,
+                        datasets: [{
+                            label: tit,
+                            data: y,
+                            backgroundColor: BgColor
+                        }]
+                    }
+                });
+            },
+            changeDateType: function (type) {
+                this.dateType = type;
+                if(type !== 'custom_date')
+                {
+                    this.customDate = '';
+                }
+                this.getChart();
+            },
+        },computed: {
+        },
+        watch: {
+            chartType: function (value) {
+                var that = this;
+                that.getChart();
+            }
+        },
+        mounted: function () {
+            if(canViewChart)
+            {
+                this.getChart();
+            }
+        }
+    });
+
+    $('#select_exam').select2();
+    $("body").on("change", '#select_exam', function(){
+        contentApp.examId = $("#select_exam").select2("val");
+    });
+
+    laydate.render({
+        elem: '#searchTime' //指定元素
+        ,type: 'date'
+        ,range: '~'
+        ,done: function(value, date, endDate){
+            contentApp.customDate = value;
+            contentApp.changeDateType('custom_date');
+        }
+    });
+</script>
+{/block}
