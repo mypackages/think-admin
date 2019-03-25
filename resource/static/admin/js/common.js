@@ -465,7 +465,6 @@ Vue.component('input_img_upload', {
         }
         this.uuid = this.parent_uuid;
         this.type = this.parent_type;
-        console.log(this.type,this.uuid);
         if(this.id_name)
         {
             this.dom_id = this.id_name;

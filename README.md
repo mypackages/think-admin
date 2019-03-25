@@ -7,6 +7,6 @@ ThinkPHP 5.1 后台管理系统
 3.在项目根目录下执行：php think tpadmin:install
 
 ## 使用
-后台地址： /index.php/admin
-默认账号：admin
+后台地址： /index.php/admin <br/>
+默认账号：admin <br/>
 默认密码：123456
