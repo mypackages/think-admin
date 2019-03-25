@@ -8,6 +8,6 @@
  */
 
 \think\Console::addDefaultCommands([
-    'tpadmin:install'         => '\\liupanv\\think\\tpadmin\\Command',
+    'tpadmin:install'         => '\\liupanv\\think\\admin\\Command',
 ]);
 

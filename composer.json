@@ -1,5 +1,5 @@
 {
-    "name": "liupan-v/tpadmin",
+    "name": "liupan-v/think-admin",
     "description": "thinkpkp5.1的一个管理后台",
     "type": "library",
     "require": {
@@ -17,7 +17,7 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4" : {
-            "liupanv\\think\\tpadmin\\"  : "src/"
+            "liupanv\\think\\admin\\"  : "src/"
         },
         "files" : [
             "autoload.php"

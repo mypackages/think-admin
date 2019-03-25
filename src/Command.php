@@ -7,7 +7,7 @@
  * Time: 8:57
  */
 
-namespace liupanv\think\tpadmin;
+namespace liupanv\think\admin;
 
 
 use think\console\Input;
