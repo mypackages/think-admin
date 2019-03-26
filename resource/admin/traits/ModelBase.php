@@ -45,7 +45,7 @@ trait ModelBase
     /**
      * 创建搜索条件
      */
-    protected function buildListCondition($condition, $with, $fields)
+    protected function buildCondition($condition, $with, $fields)
     {
         return $this;
     }
