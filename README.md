@@ -10,4 +10,4 @@ ThinkPHP 5.1 后台管理系统
 后台地址： /admin (请先自行配置thinkphp5的URL重写去掉index.php)<br/>
 默认账号：admin <br/>
 默认密码：123456 <br/>
-演示地址：http://demo.115.org.cn/admin （请勿默认管理员修改密码谢谢）
+演示地址：http://demo.115.org.cn/admin （请勿修改默认管理员密码谢谢）
