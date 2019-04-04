@@ -35,7 +35,6 @@ class AuthGroupAccess extends Migrator
             ->addColumn('user_id', 'integer',['limit' => 11,'default'=>'0','comment'=>'用户id'])
             ->addColumn('group_id', 'integer',['limit' => 11,'default'=>'0','comment'=>'用户组id'])
             ->addIndex(['user_id', 'group_id'], ['unique' => true])
-            ->addIndex(['user_id'])
             ->addIndex(['group_id'])
             ->create();
         Db::name('auth_group_access')->data(['group_id' => 1, 'user_id' => 1])->insert();

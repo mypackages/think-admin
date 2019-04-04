@@ -52,7 +52,6 @@ class Admin extends Migrator
             ->addIndex(['uuid', 'delete_time'], ['unique' => true])
             ->addIndex(['remember_me', 'delete_time'], ['unique' => true])
             ->addIndex(['status'])
-            ->addIndex(['username'])
             ->create();
         $adminModel = model('admin/Admin');
         $user = [];
