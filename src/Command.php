@@ -9,7 +9,6 @@
 
 namespace liupanv\think\admin;
 
-
 use think\console\Input;
 use think\console\Output;
 use think\Db;
@@ -34,8 +33,7 @@ class Command extends \think\console\Command
         $appPath = Env::get('app_path');
         $rootPath = Env::get('root_path');
         $resourceDir = __DIR__.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'resource';
-        if(!is_dir($resourceDir))
-        {
+        if (!is_dir($resourceDir)) {
             $output->writeln("admin is installed");
             exit;
         }
@@ -54,15 +52,10 @@ class Command extends \think\console\Command
         //执行migrate
         $output->writeln("run migrate");
         chdir(Env::get('root_path'));
-        exec('php think migrate:run',$results,$ret);
-        foreach($results as $row)
-        {
+        exec('php think migrate:run', $results, $ret);
+        foreach ($results as $row) {
             $output->writeln($row);
         }
-        //删除vendor里的资源文件以免编辑器提示重复定义
-        $output->writeln("delete vendor resource");
-        $this->delDir($resourceDir);
-
         $output->writeln("install success");
     }
 
@@ -70,40 +63,27 @@ class Command extends \think\console\Command
 
     protected function copydir($source, $dest)
     {
-        if (!file_exists($dest)) mkdir($dest, 0777, true);
+        if (!file_exists($dest)) {
+            mkdir($dest, 0777, true);
+        }
         $handle = opendir($source);
         while (($item = readdir($handle)) !== false) {
-            if ($item == '.' || $item == '..') continue;
+            if ($item == '.' || $item == '..') {
+                continue;
+            }
             $_source = $source . '/' . $item;
             $_dest = $dest . '/' . $item;
-            if (is_file($_source)) copy($_source, $_dest);
-            if (is_dir($_source)) $this->copydir($_source, $_dest);
+            if (is_file($_source)) {
+                if (strpos($item, '.stub') !== false) {
+                    $item = str_replace('.stub', '.php', $item);
+                    $_dest = $dest . '/' . $item;
+                }
+                copy($_source, $_dest);
+            }
+            if (is_dir($_source)) {
+                $this->copydir($_source, $_dest);
+            }
         }
         closedir($handle);
     }
-
-
-    protected function delDir($directory){
-        if(!file_exists($directory)){
-            return;
-        }
-        if(!($dir_handle = @opendir($directory))){
-            return;
-        }
-        while($filename = readdir($dir_handle)){
-            if($filename == '.' || $filename == '..'){
-                continue;
-            }
-            $subFile = $directory.DIRECTORY_SEPARATOR.$filename;
-            if(is_dir($subFile)){
-                $this->delDir($subFile);
-            }
-            if(is_file($subFile)){
-                unlink($subFile);
-            }
-        }
-        closedir($dir_handle);
-        rmdir($directory);
-    }
-
 }
