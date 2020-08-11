@@ -31,7 +31,7 @@ class AuthRule extends Migrator
         parent::up();
         $table = $this->table('auth_rule',['engine'=>'innodb']);
         $table->addColumn('pid', 'integer',['limit' => 11,'default'=>'0', 'comment'=>'父级id'])
-            ->addColumn('child_ids', 'text',['default'=> null,'comment'=>'子集id'])
+            ->addColumn('child_ids', 'text',['default'=> null, 'null' => true,'comment'=>'子集id'])
             ->addColumn('name', 'string',['limit' => 100,'default'=>'', 'null' => false,'comment'=>'规则名称'])
             ->addColumn('title', 'string',['limit' => 50,'default'=>'', 'null' => false,'comment'=>'规则标题'])
             ->addColumn('icon', 'string',['limit' => 50,'default'=>'', 'null' => false,'comment'=>'图标'])
