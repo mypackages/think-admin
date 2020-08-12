@@ -22,7 +22,7 @@ class FileService
         $this->driver = new $className();
     }
 
-    public function upload($file, $type, $uuid = null)
+    public function upload($file, $type, $uuid = null, $returnFullUrl = false)
     {
         $config = config('upload.file_type');
         if(!isset($config[$type]))
@@ -49,6 +49,7 @@ class FileService
         //上传
         list($path, $url) = $this->driver->upload($file, $type, $uuid);
         $path = str_replace("\\",'/', $path);
+        $url = str_replace("\\",'/', $url);
         //入库
         if($uuid !== null)
         {
@@ -66,7 +67,7 @@ class FileService
             if(!$rzt)
                 throw new Exception('文件信息入库失败');
         }
-        return $path;
+        return $returnFullUrl ? $url : $path;
     }
 
 
