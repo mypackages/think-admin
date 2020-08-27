@@ -37,7 +37,7 @@ class Login extends Base
 
                 $keepLogin = input('param.keepLogin', 0);
                 app('adminAuth')->login($param['username'], $param['password'], $keepLogin);
-                return redirect('index/index');
+                return redirect('admin/index/index');
             }catch (Exception $e)
             {
                 $this->error($e->getMessage(), 'Login/index');
