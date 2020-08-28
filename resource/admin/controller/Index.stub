@@ -8,7 +8,7 @@ use think\Exception;
 
 class Index extends Base
 {
-    public $noAuthAction = ['profile', 'myInfo'];
+    public $noAuthAction = ['profile', 'myInfo', 'index'];
     public function index()
     {
         $auth = app('adminAuth');

@@ -50,7 +50,7 @@ class AuthRule extends Migrator
             ->create();
         $model = model('admin/AuthRule');
         $list = [
-            ['id' => '1', 'pid'=>'0', 'child_ids' => '439,440,441,442,443,444,445,446,455,456,460', 'name' => 'index/index', 'title' => '控制台', 'icon' => 'fa fa-dashboard', 'is_menu' => 1, 'status' => 'normal', 'sort' => 100, 'menu_right' => '<small class="label pull-right bg-blue">hot</small>'],
+            ['id' => '1', 'pid'=>'0', 'child_ids' => '439,440,441,442,443,444,445,446,455,456,460', 'name' => 'admin/index/index', 'title' => '控制台', 'icon' => 'fa fa-dashboard', 'is_menu' => 1, 'status' => 'normal', 'sort' => 100, 'menu_right' => '<small class="label pull-right bg-blue">hot</small>'],
             ['id' => '2', 'pid'=>'6', 'child_ids' => '3,48,49,50,4,9,28,51,5,21,22,23', 'name' => 'auth', 'title' => '权限管理', 'icon' => 'fa fa-group', 'is_menu' => 1, 'status' => 'normal', 'sort' => 99],
             ['id' => '3', 'pid'=>'2', 'child_ids' => '48,49,50', 'name' => 'auth.admin/index', 'title' => '管理员管理', 'icon' => 'fa fa-user', 'is_menu' => 1, 'status' => 'normal', 'sort' => 100],
             ['id' => '4', 'pid'=>'2', 'child_ids' => '9,28,51', 'name' => 'auth.group/index', 'title' => '角色组', 'icon' => 'fa fa-group', 'is_menu' => 1, 'status' => 'normal', 'sort' => 99],
